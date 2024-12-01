@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:17:43 by apechkov          #+#    #+#             */
-/*   Updated: 2024/11/29 18:56:48 by apechkov         ###   ########.fr       */
+/*   Updated: 2024/12/01 16:56:02 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ int	main(int argc, char **argv)
 {
 	t_simulation	sim;
 
+	init_sructure(&sim);
 	if (argc < 5 || argc > 6)
 	{
 		printf("Error: wrong number of arguments\n");
@@ -23,7 +24,7 @@ int	main(int argc, char **argv)
 	}
 	if (!parse_arguments(&sim, argc, argv))
         return (0);
-	if (!initialize_simulation(&sim))
+	if (!init_simulation(&sim))
 	{
 		printf("Error: Invalid arguments\n");
 		return (1);

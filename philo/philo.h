@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:17:43 by apechkov          #+#    #+#             */
-/*   Updated: 2024/11/29 19:00:37 by apechkov         ###   ########.fr       */
+/*   Updated: 2024/12/01 19:05:35 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 # include <stdbool.h>
 
 
-#define MAX_PHILOSOPHERS 200
+//#define MAX_PHILOSOPHERS 200
 
 typedef struct s_fork
 {
@@ -50,16 +50,15 @@ typedef struct s_simulation
 	int				time_to_sleep;
 	int				meal_goal;
 	long			start_time;
-	t_philosopher	philosophers[MAX_PHILOSOPHERS];
-    t_fork			forks[MAX_PHILOSOPHERS];
+	t_philosopher	*philosophers; //changed to pointer
+    t_fork			*forks; //changed to pointer
 	bool			simulation_running;
-    //bool			should_exit;
-	pthread_mutex_t	log_mutex;  
-	//pthread_mutex_t state_mutex; 
-	//int				has_died;
+	pthread_mutex_t	log_mutex;  //i need change name
+	int				initialized; //new
+	
 }	t_simulation;
 
-int		initialize_simulation(t_simulation *sim);
+int		init_simulation(t_simulation *sim);
 void	start_simulation(t_simulation *sim);
 void	*philosopher_lifecycle(void *arg);
 void	cleanup_simulation(t_simulation *sim);
@@ -80,4 +79,6 @@ long	elapsed_time(long start_time);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
 int		ft_strlen(const char *s);
 char	*ft_itoa(int n);
+
+void	init_sructure(t_simulation *sim);
 #endif

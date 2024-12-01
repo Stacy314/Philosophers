@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:17:43 by apechkov          #+#    #+#             */
-/*   Updated: 2024/11/29 19:01:46 by apechkov         ###   ########.fr       */
+/*   Updated: 2024/12/01 19:05:52 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,45 +66,118 @@ int parse_arguments(t_simulation *sim, int argc, char **argv)
     return (1);
 }
 
-int initialize_simulation(t_simulation *sim)
-{
-    int i;
+//int init_simulation(t_simulation *sim)
+//{
+//    int i;
 	
-    sim->simulation_running = 1; //why do we need it? 
-	if(pthread_mutex_init(&sim->log_mutex, NULL))
-	    return (0);	
-	i = 0;
-    while (i < sim->num_philosophers)
-	{
-        sim->philosophers[i].id = i + 1;
-        sim->philosophers[i].meals_eaten = 0;
-        sim->philosophers[i].last_meal_time = current_time();
-        sim->philosophers[i].sim = sim;
+//    sim->simulation_running = 1;
+//	if(pthread_mutex_init(&sim->log_mutex, NULL))
+//	    return (0);	
+//	i = 0;
+//    while (i < sim->num_philosophers)
+//	{
+//        sim->philosophers[i].id = i + 1;
+//        sim->philosophers[i].meals_eaten = 0;
+//        sim->philosophers[i].last_meal_time = current_time();
+//        sim->philosophers[i].sim = sim;
 		
-		if(pthread_mutex_init(&sim->philosophers[i].meal_mutex, NULL))
+//		if(pthread_mutex_init(&sim->philosophers[i].meal_mutex, NULL))
+//		{
+//			pthread_mutex_destroy(&sim->log_mutex);
+//			return (0);
+//		}
+//        if(pthread_mutex_init(&sim->forks[i].mutex, NULL))
+//		{
+//			pthread_mutex_destroy(&sim->philosophers[i].meal_mutex);
+//			pthread_mutex_destroy(&sim->log_mutex);
+//			return (0);
+//		}
+//        sim->philosophers[i].left_fork = &sim->forks[i];
+//        sim->philosophers[i].right_fork = &sim->forks[(i + 1) % sim->num_philosophers];
+//		i++;
+//    }
+//    return (1);
+//}
+
+	int init_mutexes(t_simulation *sim)
+	{
+	    for (int i = 0; i < sim->num_philosophers; i++)
+	    {
+	        if (pthread_mutex_init(&sim->forks[i].mutex, NULL))
+	            return (0);
+	        sim->philosophers[i].id = i + 1;
+	        sim->philosophers[i].left_fork = &sim->forks[i];
+	        sim->philosophers[i].right_fork = &sim->forks[(i + 1) % sim->num_philosophers];
+	        sim->philosophers[i].meals_eaten = 0;
+	        sim->philosophers[i].last_meal_time = current_time();
+	        sim->philosophers[i].sim = sim;
+	        if (pthread_mutex_init(&sim->philosophers[i].meal_mutex, NULL))
+	            return (0);
+	    }
+		if (pthread_mutex_init(&sim->log_mutex, NULL) != 0)
 		{
-			pthread_mutex_destroy(&sim->log_mutex);
+			printf("Error: Unable to initialize log_mutex\n");
+			free(sim->philosophers);
+	        free(sim->forks);
 			return (0);
 		}
-        if(pthread_mutex_init(&sim->forks[i].mutex, NULL))
+	    return (1);
+	}
+
+	int init_simulation(t_simulation *sim)
+	{
+		sim->initialized = 0;
+	    sim->philosophers = malloc(sim->num_philosophers * sizeof(t_philosopher));
+	    if (!sim->philosophers)
 		{
-			pthread_mutex_destroy(&sim->philosophers[i].meal_mutex);
-			pthread_mutex_destroy(&sim->log_mutex);
+			cleanup_simulation(sim);
 			return (0);
 		}
-        sim->philosophers[i].left_fork = &sim->forks[i];
-        sim->philosophers[i].right_fork = &sim->forks[(i + 1) % sim->num_philosophers];
-		i++;
-    }
-    return (1);
+	    sim->forks = malloc(sim->num_philosophers * sizeof(t_fork));
+	    if (!sim->forks)
+	    {
+	        cleanup_simulation(sim);
+	        return (0);
+	    }
+
+	    if (!init_mutexes(sim))
+	    {
+			cleanup_simulation(sim);
+	        return (0);
+	    }
+		sim->initialized = 1;
+		return (1);
+	}
+
+void cleanup_simulation(t_simulation *sim) // need to update
+{
+    //for (int i = 0; i < sim->num_philosophers; i++)
+	//{
+    //    pthread_mutex_destroy(&sim->philosophers[i].meal_mutex);
+    //    pthread_mutex_destroy(&sim->forks[i].mutex);
+    //}
+   // pthread_mutex_destroy(&sim->log_mutex);
+   
+
+    if (sim->philosophers)
+        free(sim->philosophers);
+    if (sim->forks)
+        free(sim->forks);
 }
 
-void cleanup_simulation(t_simulation *sim)
+void	init_sructure(t_simulation *sim)
 {
-    for (int i = 0; i < sim->num_philosophers; i++)
-	{
-        pthread_mutex_destroy(&sim->philosophers[i].meal_mutex);
-        pthread_mutex_destroy(&sim->forks[i].mutex);
-    }
-    pthread_mutex_destroy(&sim->log_mutex);
+	sim->num_philosophers = 0;
+	sim->time_to_die = 0;
+	sim->time_to_eat = 0;
+	sim->time_to_sleep = 0;
+	sim->meal_goal = 0;
+	sim->start_time = 0;
+	sim->simulation_running = 0;
+//	sim->philosophers->id = 0;
+//	sim->philosophers->meals_eaten = 0;
+//	sim->philosophers->last_meal_time = 0;
+//	sim->philosophers->sim = NULL;
+//	sim->philosophers->left_fork = NULL;
+//	sim->philosophers->right_fork = NULL; //need to check all
 }
