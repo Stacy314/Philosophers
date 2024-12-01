@@ -1,11 +1,11 @@
+NAME = philo
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g
 SRC_DIR = src
 OBJ_DIR = obj
-SRC_FILES = main.c simulation.c philosopher.c utils.c
+SRC_FILES = main.c simulation.c philosopher.c utils.c actions.c
 OBJ_FILES = $(SRC_FILES:.c=.o)
-OBJS = $(addprefix $(OBJ_DIR)/, $(OBJ_FILES))
-NAME = philo
+OBJS =  $(OBJ_DIR)/main.o $(OBJ_DIR)/simulation.o $(OBJ_DIR)/philosopher.o $(OBJ_DIR)/utils.o $(OBJ_DIR)/actions.o
 
 all: $(NAME)
 
