@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:17:43 by apechkov          #+#    #+#             */
-/*   Updated: 2024/12/01 19:05:35 by apechkov         ###   ########.fr       */
+/*   Updated: 2024/12/03 16:55:55 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,6 @@
 # include <stdint.h>
 # include <unistd.h>
 # include <stdbool.h>
-
-
-//#define MAX_PHILOSOPHERS 200
 
 typedef struct s_fork
 {
@@ -55,7 +52,7 @@ typedef struct s_simulation
 	bool			simulation_running;
 	pthread_mutex_t	log_mutex;  //i need change name
 	int				initialized; //new
-	
+	//int				is_dead; //new
 }	t_simulation;
 
 int		init_simulation(t_simulation *sim);

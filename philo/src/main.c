@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:17:43 by apechkov          #+#    #+#             */
-/*   Updated: 2024/12/01 16:56:02 by apechkov         ###   ########.fr       */
+/*   Updated: 2024/12/03 17:58:24 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	main(int argc, char **argv)
 		return (1);
 	}
 	if (!parse_arguments(&sim, argc, argv))
-        return (0);
+		return (0);
 	if (!init_simulation(&sim))
 	{
 		printf("Error: Invalid arguments\n");

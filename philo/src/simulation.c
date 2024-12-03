@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:17:43 by apechkov          #+#    #+#             */
-/*   Updated: 2024/12/01 19:05:52 by apechkov         ###   ########.fr       */
+/*   Updated: 2024/12/03 16:56:22 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,39 +66,6 @@ int parse_arguments(t_simulation *sim, int argc, char **argv)
     return (1);
 }
 
-//int init_simulation(t_simulation *sim)
-//{
-//    int i;
-	
-//    sim->simulation_running = 1;
-//	if(pthread_mutex_init(&sim->log_mutex, NULL))
-//	    return (0);	
-//	i = 0;
-//    while (i < sim->num_philosophers)
-//	{
-//        sim->philosophers[i].id = i + 1;
-//        sim->philosophers[i].meals_eaten = 0;
-//        sim->philosophers[i].last_meal_time = current_time();
-//        sim->philosophers[i].sim = sim;
-		
-//		if(pthread_mutex_init(&sim->philosophers[i].meal_mutex, NULL))
-//		{
-//			pthread_mutex_destroy(&sim->log_mutex);
-//			return (0);
-//		}
-//        if(pthread_mutex_init(&sim->forks[i].mutex, NULL))
-//		{
-//			pthread_mutex_destroy(&sim->philosophers[i].meal_mutex);
-//			pthread_mutex_destroy(&sim->log_mutex);
-//			return (0);
-//		}
-//        sim->philosophers[i].left_fork = &sim->forks[i];
-//        sim->philosophers[i].right_fork = &sim->forks[(i + 1) % sim->num_philosophers];
-//		i++;
-//    }
-//    return (1);
-//}
-
 	int init_mutexes(t_simulation *sim)
 	{
 	    for (int i = 0; i < sim->num_philosophers; i++)
@@ -151,14 +118,6 @@ int parse_arguments(t_simulation *sim, int argc, char **argv)
 
 void cleanup_simulation(t_simulation *sim) // need to update
 {
-    //for (int i = 0; i < sim->num_philosophers; i++)
-	//{
-    //    pthread_mutex_destroy(&sim->philosophers[i].meal_mutex);
-    //    pthread_mutex_destroy(&sim->forks[i].mutex);
-    //}
-   // pthread_mutex_destroy(&sim->log_mutex);
-   
-
     if (sim->philosophers)
         free(sim->philosophers);
     if (sim->forks)

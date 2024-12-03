@@ -1,6 +1,6 @@
 NAME = philo
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -Wall -Wextra -Werror -g #-fsanitize=thread
 SRC_DIR = src
 OBJ_DIR = obj
 SRC_FILES = main.c  \
