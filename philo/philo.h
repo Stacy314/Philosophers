@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:17:43 by apechkov          #+#    #+#             */
-/*   Updated: 2024/12/03 16:55:55 by apechkov         ###   ########.fr       */
+/*   Updated: 2024/12/03 23:05:32 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@ typedef struct s_philosopher
 	pthread_t			thread;
 	struct s_simulation	*sim;
 	t_fork				*left_fork;
-	t_fork				*right_fork; 
-	pthread_mutex_t     meal_mutex;
+	t_fork				*right_fork;
+	pthread_mutex_t		meal_mutex;
 }	t_philosopher;
 
 typedef struct s_simulation
@@ -48,11 +48,10 @@ typedef struct s_simulation
 	int				meal_goal;
 	long			start_time;
 	t_philosopher	*philosophers; //changed to pointer
-    t_fork			*forks; //changed to pointer
+	t_fork			*forks; //changed to pointer
 	bool			simulation_running;
-	pthread_mutex_t	log_mutex;  //i need change name
+	pthread_mutex_t	log_mutex; //i need change name
 	int				initialized; //new
-	//int				is_dead; //new
 }	t_simulation;
 
 int		init_simulation(t_simulation *sim);
