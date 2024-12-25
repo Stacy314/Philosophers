@@ -6,11 +6,26 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:17:43 by apechkov          #+#    #+#             */
-/*   Updated: 2024/12/03 17:58:24 by apechkov         ###   ########.fr       */
+/*   Updated: 2024/12/25 14:39:43 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
+#include <threads.h>
+
+void	destroy_mutexes(t_simulation *sim)
+{
+	int	i;
+
+	i = 0;
+	while (i < sim->num_philosophers)
+	{
+		pthread_mutex_destroy(&sim->forks[i].mutex);
+		pthread_mutex_destroy(&sim->philosophers[i].meal_mutex);
+		i++;
+	}
+	pthread_mutex_destroy(&sim->log_mutex);
+}
 
 int	main(int argc, char **argv)
 {
@@ -30,6 +45,7 @@ int	main(int argc, char **argv)
 		return (1);
 	}
 	start_simulation(&sim);
+	destroy_mutexes(&sim);
 	cleanup_simulation(&sim);
 	return (0);
 }

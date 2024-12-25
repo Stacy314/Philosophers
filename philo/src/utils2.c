@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:17:43 by apechkov          #+#    #+#             */
-/*   Updated: 2024/12/03 23:10:48 by anastasiia       ###   ########.fr       */
+/*   Updated: 2024/12/09 14:12:59 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int	ft_strlen(const char *s)
 	return (i);
 }
 
-void	cleanup_simulation(t_simulation *sim) // need to update
+void	cleanup_simulation(t_simulation *sim)
 {
 	if (sim->philosophers)
 		free(sim->philosophers);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   simulation.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:17:43 by apechkov          #+#    #+#             */
-/*   Updated: 2024/12/03 23:09:56 by anastasiia       ###   ########.fr       */
+/*   Updated: 2024/12/20 14:10:04 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,13 +99,15 @@ int	init_mutexes(t_simulation *sim)
 int	init_simulation(t_simulation *sim)
 {
 	sim->initialized = 0;
-	sim->philosophers = malloc(sim->num_philosophers * sizeof(t_philosopher));
+	sim->philosophers = ft_calloc(sim->num_philosophers
+			* sizeof(t_philosopher), 1);
 	if (!sim->philosophers)
 	{
-		cleanup_simulation(sim);
+		if (sim->philosophers)
+			free(sim->philosophers);
 		return (0);
 	}
-	sim->forks = malloc(sim->num_philosophers * sizeof(t_fork));
+	sim->forks = ft_calloc(sim->num_philosophers * sizeof(t_fork), 1);
 	if (!sim->forks)
 	{
 		cleanup_simulation(sim);

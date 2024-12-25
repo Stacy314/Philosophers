@@ -1,21 +1,25 @@
 NAME = philo
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g #-fsanitize=thread
+CFLAGS = -Wall -Wextra -Werror -g
 SRC_DIR = src
 OBJ_DIR = obj
 SRC_FILES = main.c  \
 			utils.c  \
 			utils2.c \
+			utils3.c \
 			simulation.c \
 			philosopher.c \
-			actions.c
+			actions.c \
+			death_monitor.c
 OBJ_FILES = $(SRC_FILES:.c=.o)
 OBJS =  $(OBJ_DIR)/main.o \
 		$(OBJ_DIR)/simulation.o \
 		$(OBJ_DIR)/philosopher.o \
 		$(OBJ_DIR)/utils.o \
 		$(OBJ_DIR)/utils2.o \
-		$(OBJ_DIR)/actions.o  
+		$(OBJ_DIR)/utils3.o \
+		$(OBJ_DIR)/actions.o \
+		$(OBJ_DIR)/death_monitor.o
 
 all: $(NAME)
 

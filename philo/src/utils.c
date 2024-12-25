@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:17:43 by apechkov          #+#    #+#             */
-/*   Updated: 2024/11/29 18:55:54 by apechkov         ###   ########.fr       */
+/*   Updated: 2024/12/19 16:42:56 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ char	*ft_itoa(int n)
 		i++;
 	str = (char *) ft_calloc(sizeof(char) * (i + 1), 1);
 	if (!str)
-		return (0);
+		exit (1);
 	str[i] = '\0';
 	if (n == 0)
 	{
