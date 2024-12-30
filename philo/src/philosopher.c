@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:17:43 by apechkov          #+#    #+#             */
-/*   Updated: 2024/12/30 17:56:15 by apechkov         ###   ########.fr       */
+/*   Updated: 2024/12/30 19:33:45 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,7 @@ void	stop_simulation(t_simulation *sim, int i)
 		j++;
 	}
 	cleanup_simulation(sim);
+	//wrong function call
 	exit(1);
 }
 
@@ -109,13 +110,21 @@ void	start_simulation(t_simulation *sim)
 	i = 0;
 	while (i < sim->num_philosophers)
 	{
+		//if (i == 5) // valgrind --tool=helgrind ./philo 6 600 200 200 10 sometimes fails with valgrind
+		//{
+		//	tread = 11;
+		//}
+		//else {
 		tread = pthread_create(&sim->philosophers[i].thread, NULL,
-				philosopher_lifecycle, &sim->philosophers[i]);
+			philosopher_lifecycle, &sim->philosophers[i]);
+			
+		//}
 		if (tread != 0)
 			stop_simulation(sim, i);
 		i++;
 	}
 	tread = pthread_create(&sim->monitor_thread, NULL, death_monitor, sim);
+	//tread = 11; // also could cause a valgrind error 
 	if (tread != 0)
 	{
 		stop_simulation(sim, i);

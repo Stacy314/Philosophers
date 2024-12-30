@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:17:43 by apechkov          #+#    #+#             */
-/*   Updated: 2024/12/30 17:40:46 by apechkov         ###   ########.fr       */
+/*   Updated: 2024/12/30 19:22:30 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,9 @@
 int	valid_arg(t_simulation *sim, char **argv)
 {
 	sim->str = ft_itoa(sim->num_philosophers);
+	//sim->str = NULL;
+	//if (!sim->str)
+	//	return (0);
 	if (ft_strncmp(sim->str, argv[1], ft_strlen(argv[1])))
 		return (free(sim->str), 0);
 	free(sim->str);
