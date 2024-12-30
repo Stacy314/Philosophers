@@ -10,7 +10,7 @@ SRC_FILES = main.c  \
 			simulation.c \
 			philosopher.c \
 			actions.c \
-			death_monitor.c
+			monitor.c
 OBJ_FILES = $(SRC_FILES:.c=.o)
 OBJS =  $(OBJ_DIR)/main.o \
 		$(OBJ_DIR)/simulation.o \
@@ -19,7 +19,7 @@ OBJS =  $(OBJ_DIR)/main.o \
 		$(OBJ_DIR)/utils2.o \
 		$(OBJ_DIR)/utils3.o \
 		$(OBJ_DIR)/actions.o \
-		$(OBJ_DIR)/death_monitor.o
+		$(OBJ_DIR)/monitor.o
 
 all: $(NAME)
 

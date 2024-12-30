@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:17:43 by apechkov          #+#    #+#             */
-/*   Updated: 2024/12/09 15:54:18 by apechkov         ###   ########.fr       */
+/*   Updated: 2024/12/30 17:59:29 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,12 @@
 # include <unistd.h>
 # include <stdbool.h>
 
+# define RUNNING 1
+# define STOPPED 0
+
 typedef struct s_fork
 {
-	pthread_mutex_t	mutex;
+	pthread_mutex_t	fork_mutex;
 }	t_fork;
 
 typedef struct s_philosopher
@@ -51,6 +54,7 @@ typedef struct s_simulation
 	t_fork			*forks;
 	bool			simulation_running;
 	pthread_mutex_t	log_mutex;
+	pthread_t		monitor_thread;
 	int				initialized;
 }	t_simulation;
 
@@ -63,16 +67,16 @@ void	init_sructure(t_simulation *sim);
 // philosopher.c
 void	start_simulation(t_simulation *sim);
 void	*philosopher_lifecycle(void *arg);
-void	log_action(t_simulation *sim, int id, const char *status);
 int		check_simulation_running(t_simulation *sim);
 
 // death_monitor.c
 void	*death_monitor(void *arg);
-void	ft_usleep(t_simulation *sim, long action);
+int		check_philosopher_death(t_simulation *sim);
 
 // actions.c
 void	think(t_philosopher *philo);
 void	take_forks(t_philosopher *philo);
+void	for_odd(t_philosopher *philo);
 void	eat(t_philosopher *philo);
 void	release_forks(t_philosopher *philo);
 void	sleep_and_log(t_philosopher *philo);
@@ -86,5 +90,9 @@ void	cleanup_simulation(t_simulation *sim);
 long	current_time(void);
 int		ft_atoi(const char *nptr);
 void	*ft_calloc(size_t nmemb, size_t size);
+void	ft_putendl_fd(char *s, int fd);
+void	destroy_mutexes(t_simulation *sim);
+void	ft_usleep(t_simulation *sim, long action);
+void	log_action(t_simulation *sim, int id, const char *status);
 
 #endif

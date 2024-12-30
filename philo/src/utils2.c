@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:17:43 by apechkov          #+#    #+#             */
-/*   Updated: 2024/12/09 14:12:59 by apechkov         ###   ########.fr       */
+/*   Updated: 2024/12/30 17:34:25 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,10 +49,11 @@ void	cleanup_simulation(t_simulation *sim)
 
 long	current_time(void)
 {
-	struct timeval	tv;
+	struct timeval	time;
 
-	gettimeofday(&tv, NULL);
-	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
+	if (gettimeofday(&time, NULL) == -1)
+		ft_putendl_fd("Error: gettimeofday", 2);
+	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
 }
 
 long	elapsed_time(long start_time)

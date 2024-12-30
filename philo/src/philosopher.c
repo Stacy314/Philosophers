@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:17:43 by apechkov          #+#    #+#             */
-/*   Updated: 2024/12/25 14:42:54 by apechkov         ###   ########.fr       */
+/*   Updated: 2024/12/30 17:56:15 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,34 +14,32 @@
 
 static void	one_philosopher(t_philosopher *philo)
 {
-	pthread_mutex_lock(&philo->left_fork->mutex);
+	pthread_mutex_lock(&philo->left_fork->fork_mutex);
 	log_action(philo->sim, philo->id, "has taken a fork");
 	usleep(philo->sim->time_to_die * 1000);
-	pthread_mutex_unlock(&philo->left_fork->mutex);
-}
-
-int	check_simulation_running(t_simulation *sim)
-{
-	int	running;
-
-	pthread_mutex_lock(&sim->log_mutex);
-	running = sim->simulation_running;
-	pthread_mutex_unlock(&sim->log_mutex);
-	return (running);
+	pthread_mutex_unlock(&philo->left_fork->fork_mutex);
 }
 
 void	*philosopher_lifecycle(void *arg)
 {
 	t_philosopher	*philo;
+	int				num;
 
 	philo = (t_philosopher *)arg;
 	if (philo->sim->num_philosophers == 1)
 		return (one_philosopher(philo), NULL);
+	if (philo->sim->num_philosophers % 2 == 0)
+		num = 2;
+	else
+		num = 1;
 	while (1)
 	{
 		if (!check_simulation_running(philo->sim))
 			break ;
-		take_forks(philo);
+		if (num == 2)
+			take_forks(philo);
+		else if (num == 1)
+			for_odd(philo);
 		if (!check_simulation_running(philo->sim))
 		{
 			release_forks(philo);
@@ -59,43 +57,69 @@ void	*philosopher_lifecycle(void *arg)
 	return (NULL);
 }
 
-void	join_treads(t_simulation *sim)
+void	join_threads(t_simulation *sim)
 {
 	int	i;
+	int	tread;
 
 	i = 0;
 	while (i < sim->num_philosophers)
 	{
-		if (pthread_join(sim->philosophers[i].thread, NULL))
-			printf("Error: Failed to join thread %d\n", i + 1);
+		tread = pthread_join(sim->philosophers[i].thread, NULL);
+		if (tread != 0)
+		{
+			ft_putendl_fd("Error: pthread_join failed ", 2);
+		}
 		i++;
 	}
+	tread = pthread_join(sim->monitor_thread, NULL);
+	if (tread != 0)
+	{
+		ft_putendl_fd("Error: pthread_join failed ", 2);
+	}
+}
+
+void	stop_simulation(t_simulation *sim, int i)
+{
+	int	j;
+
+	pthread_mutex_lock(&sim->log_mutex);
+	sim->simulation_running = STOPPED;
+	pthread_mutex_unlock(&sim->log_mutex);
+	ft_putendl_fd("Error: pthread_create failed", 2);
+	j = 0;
+	while (j < i)
+	{
+		pthread_detach(sim->philosophers[j].thread);
+		j++;
+	}
+	cleanup_simulation(sim);
+	exit(1);
 }
 
 void	start_simulation(t_simulation *sim)
 {
 	int			i;
-	pthread_t	monitor_thread;
+	int			tread;
 
-	i = 0;
+	pthread_mutex_lock(&sim->log_mutex);
+	sim->simulation_running = RUNNING;
+	pthread_mutex_unlock(&sim->log_mutex);
 	sim->start_time = current_time();
+	i = 0;
 	while (i < sim->num_philosophers)
 	{
-		if (pthread_create(&sim->philosophers[i].thread, NULL,
-				philosopher_lifecycle, &sim->philosophers[i]))
-		{
-			sim->simulation_running = 0;
-			join_treads(sim);
-			return ;
-		}
+		tread = pthread_create(&sim->philosophers[i].thread, NULL,
+				philosopher_lifecycle, &sim->philosophers[i]);
+		if (tread != 0)
+			stop_simulation(sim, i);
 		i++;
 	}
-	if (pthread_create(&monitor_thread, NULL, death_monitor, sim))
+	tread = pthread_create(&sim->monitor_thread, NULL, death_monitor, sim);
+	if (tread != 0)
 	{
-		sim->simulation_running = 0;
-		join_treads(sim);
-		return ;
+		stop_simulation(sim, i);
+		pthread_detach(sim->monitor_thread);
 	}
-	join_treads(sim);
-	pthread_join(monitor_thread, NULL);
+	join_threads(sim);
 }

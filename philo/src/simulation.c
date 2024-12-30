@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:17:43 by apechkov          #+#    #+#             */
-/*   Updated: 2024/12/20 14:10:04 by apechkov         ###   ########.fr       */
+/*   Updated: 2024/12/30 17:40:46 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,6 @@ int	parse_arguments(t_simulation *sim, int argc, char **argv)
 		sim->meal_goal = -1;
 	if (!valid_arg(sim, argv))
 		return (printf("Error: Invalid arguments\n"), 0);
-	sim->simulation_running = 1;
 	if (sim->num_philosophers < 1 || sim->num_philosophers > 200)
 		return (printf("Error: There should be 1-200 philosophers.\n"), 0);
 	if (sim->time_to_die <= 0 || sim->time_to_eat <= 0
@@ -68,15 +67,13 @@ int	parse_arguments(t_simulation *sim, int argc, char **argv)
 	return (1);
 }
 
-int	init_mutexes(t_simulation *sim)
+void	init_philosopher(t_simulation *sim)
 {
 	int	i;
 
 	i = 0;
 	while (i < sim->num_philosophers)
 	{
-		if (pthread_mutex_init(&sim->forks[i].mutex, NULL))
-			return (0);
 		sim->philosophers[i].id = i + 1;
 		sim->philosophers[i].left_fork = &sim->forks[i];
 		sim->philosophers[i].right_fork = &sim->forks[(i + 1)
@@ -84,21 +81,31 @@ int	init_mutexes(t_simulation *sim)
 		sim->philosophers[i].meals_eaten = 0;
 		sim->philosophers[i].last_meal_time = current_time();
 		sim->philosophers[i].sim = sim;
-		if (pthread_mutex_init(&sim->philosophers[i].meal_mutex, NULL))
+		i++;
+	}
+}
+
+int	init_mutexes(t_simulation *sim)
+{
+	int	i;
+
+	i = 0;
+	while (i < sim->num_philosophers)
+	{
+		init_philosopher(sim);
+		if (pthread_mutex_init(&sim->forks[i].fork_mutex, NULL) != 0)
+			return (0);
+		if (pthread_mutex_init(&sim->philosophers[i].meal_mutex, NULL) != 0)
 			return (0);
 		i++;
 	}
 	if (pthread_mutex_init(&sim->log_mutex, NULL) != 0)
-	{
-		printf("Error: Unable to initialize log_mutex\n");
-		return (free(sim->philosophers), free(sim->forks), 0);
-	}
+		return (0);
 	return (1);
 }
 
 int	init_simulation(t_simulation *sim)
 {
-	sim->initialized = 0;
 	sim->philosophers = ft_calloc(sim->num_philosophers
 			* sizeof(t_philosopher), 1);
 	if (!sim->philosophers)
@@ -118,19 +125,5 @@ int	init_simulation(t_simulation *sim)
 		cleanup_simulation(sim);
 		return (0);
 	}
-	sim->initialized = 1;
 	return (1);
-}
-
-void	init_sructure(t_simulation *sim)
-{
-	sim->str = NULL;
-	sim->num_philosophers = 0;
-	sim->time_to_die = 0;
-	sim->time_to_eat = 0;
-	sim->time_to_sleep = 0;
-	sim->meal_goal = 0;
-	sim->start_time = 0;
-	sim->simulation_running = 0;
-	sim->initialized = 0;
 }
