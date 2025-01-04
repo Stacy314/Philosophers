@@ -6,7 +6,7 @@
 /*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:17:43 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/04 20:21:04 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/01/04 20:54:03 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ char	*ft_itoa(int n)
 	str = (char *) ft_calloc(sizeof(char) * (i + 1), 1);
 	//str = NULL;
 	if (!str)
-		return "";
+		return (NULL);
 	str[i] = '\0';
 	if (n == 0)
 	{
