@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   monitor.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:17:43 by apechkov          #+#    #+#             */
-/*   Updated: 2024/12/30 18:17:01 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/04 20:28:25 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static int	check_meal_goal(t_simulation *sim)
 		pthread_mutex_unlock(&sim->log_mutex);
 		return (1);
 	}
-	usleep(100);
+	// usleep(100);
 	return (0);
 }
 
@@ -61,44 +61,19 @@ int	check_philosopher_death(t_simulation *sim)
 			return (1);
 		}
 		i++;
-		usleep(100);
+		// usleep(100);
 	}
 	return (0);
 }
+int	check_simulation_running(t_simulation *sim)
+{
+	int	running;
 
-//static int	check_initialization(t_simulation *sim)
-//{
-//	int	initialized;
-
-//	pthread_mutex_lock(&sim->log_mutex);
-//	initialized = sim->initialized;
-//	pthread_mutex_unlock(&sim->log_mutex);
-//	if (!initialized)
-//	{
-//		usleep(1000);
-//		return (0);
-//	}
-//	return (1);
-//}
-
-//void	*death_monitor(void *arg)
-//{
-//	t_simulation	*sim;
-
-//	sim = (t_simulation *)arg;
-//	while (sim->simulation_running)
-//	{
-//		if (!check_initialization(sim))
-//			break ;
-//		if (check_philosopher_death(sim))
-//			return (NULL);
-//		if (check_meal_goal(sim))
-//			return (NULL);
-//		usleep(1000);
-//	}
-//	return (NULL);
-//}
-
+	pthread_mutex_lock(&sim->log_mutex);
+	running = sim->simulation_running;
+	pthread_mutex_unlock(&sim->log_mutex);
+	return (running);
+}
 void	*death_monitor(void *arg)
 {
 	t_simulation	*sim;
@@ -115,22 +90,4 @@ void	*death_monitor(void *arg)
 		usleep(1000);
 	}
 	return (NULL);
-}
-
-void	ft_usleep(t_simulation *sim, long action)
-{
-	long	time;
-
-	time = current_time();
-	while (elapsed_time(time) < action)
-	{
-		pthread_mutex_lock(&sim->log_mutex);
-		if (!sim->simulation_running)
-		{
-			pthread_mutex_unlock(&sim->log_mutex);
-			break ;
-		}
-		pthread_mutex_unlock(&sim->log_mutex);
-		usleep(100);
-	}
 }

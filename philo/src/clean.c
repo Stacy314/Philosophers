@@ -1,37 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   clean.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:17:43 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/04 20:19:04 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/01/04 20:22:44 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
 
-int	main(int argc, char **argv)
+void	destroy_mutexes(t_simulation *sim)
 {
-	t_simulation	sim;
+	int	i;
 
-	if (argc < 5 || argc > 6)
+	i = 0;
+	while (i < sim->num_philosophers)
 	{
-		printf("Error: wrong number of arguments\n");
-		return (1);
+		pthread_mutex_destroy(&sim->forks[i].fork_mutex);
+		pthread_mutex_destroy(&sim->philosophers[i].meal_mutex);
+		i++;
 	}
-	init_sructure(&sim);
-	if (!parse_arguments(&sim, argc, argv))
-		return (0);
-	if (!init_simulation(&sim))
-	{
-		//print right error message
-		printf("Error: Invalid arguments\n");
-		return (1);
-	}
-	start_simulation(&sim);
-	destroy_mutexes(&sim);
-	cleanup_simulation(&sim);
-	return (0);
+	pthread_mutex_destroy(&sim->log_mutex);
+}
+void	cleanup_simulation(t_simulation *sim)
+{
+	if (sim->philosophers)
+		free(sim->philosophers);
+	if (sim->forks)
+		free(sim->forks);
 }

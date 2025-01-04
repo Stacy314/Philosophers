@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:17:43 by apechkov          #+#    #+#             */
-/*   Updated: 2024/12/30 19:24:52 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/04 20:23:44 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,77 +27,59 @@ void	*ft_calloc(size_t nmemb, size_t size)
 		ptr[length] = 0;
 	return (ptr);
 }
-
-int	ft_atoi(const char *nptr)
+int	ft_strncmp(const char *s1, const char *s2, size_t n)
 {
-	int	nbr;
-	int	minus;
+	size_t	i;
 
-	nbr = 0;
-	minus = 1;
-	while ((*nptr >= 9 && *nptr <= 13) || *nptr == 32)
-		nptr++;
-	if (*nptr == '-' || *nptr == '+')
+	if (n == 0)
+		return (0);
+	i = 0;
+	while (s1[i] == s2[i] && s1[i] != '\0')
 	{
-		if (*nptr == '-')
-			minus = -1;
-		nptr++;
+		if (i < (n - 1))
+			i++;
+		else
+			return (0);
 	}
-	while (*nptr >= '0' && *nptr <= '9')
-	{
-		nbr = nbr * 10 + (*nptr - '0');
-		nptr++;
-	}
-	return (nbr * minus);
+	return ((unsigned char)(s1[i]) - (unsigned char)(s2[i]));
 }
 
-static int	count(int num)
+int	ft_strlen(const char *s)
 {
 	int	i;
 
 	i = 0;
-	if (num == 0)
-		return (1);
-	while (num != 0)
-	{
-		num /= 10;
+	while (s[i])
 		i++;
-	}
 	return (i);
 }
-
-static void	fill(int i, int n, char *str)
+void	ft_putendl_fd(char *s, int fd)
 {
-	while (n != 0)
+	int	i;
+
+	i = 0;
+	while (s[i] != '\0')
 	{
-		i--;
-		str[i] = (char)(((n % 10) * (2 * (n > 0) - 1)) + '0');
-		n /= 10;
+		write(fd, &s[i], 1);
+		i++;
 	}
+	write(fd, "\n", 1);
 }
 
-char	*ft_itoa(int n)
+void	ft_usleep(t_simulation *sim, long action)
 {
-	int		num;
-	int		i;
-	char	*str;
+	long	time;
 
-	num = n;
-	i = count(n);
-	if (n < 0)
-		i++;
-	str = (char *) ft_calloc(sizeof(char) * (i + 1), 1);
-	//str = NULL;
-	if (!str)
-		return "";
-	str[i] = '\0';
-	if (n == 0)
+	time = current_time();
+	while (elapsed_time(time) < action)
 	{
-		str[0] = '0';
-		return (str);
+		pthread_mutex_lock(&sim->log_mutex);
+		if (!sim->simulation_running)
+		{
+			pthread_mutex_unlock(&sim->log_mutex);
+			break ;
+		}
+		pthread_mutex_unlock(&sim->log_mutex);
+		usleep(100);
 	}
-	fill(i, n, str);
-	if (num < 0)
-		str[0] = '-';
-	return (str);
 }

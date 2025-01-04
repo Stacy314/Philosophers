@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:17:43 by apechkov          #+#    #+#             */
-/*   Updated: 2024/12/30 17:59:29 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/04 20:24:56 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,6 @@ void	*ft_calloc(size_t nmemb, size_t size);
 void	ft_putendl_fd(char *s, int fd);
 void	destroy_mutexes(t_simulation *sim);
 void	ft_usleep(t_simulation *sim, long action);
-void	log_action(t_simulation *sim, int id, const char *status);
+void	print_action(t_simulation *sim, int id, const char *status);
 
 #endif
