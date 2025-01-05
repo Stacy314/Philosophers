@@ -6,7 +6,7 @@
 /*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:17:43 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/04 20:39:29 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/01/05 17:13:02 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,23 +23,15 @@ static void	one_philosopher(t_philosopher *philo)
 void	*philosopher_lifecycle(void *arg)
 {
 	t_philosopher	*philo;
-	int				num;
 
 	philo = (t_philosopher *)arg;
 	if (philo->sim->num_philosophers == 1)
 		return (one_philosopher(philo), NULL);
-	if (philo->sim->num_philosophers % 2 == 0)
-		num = 2;
-	else
-		num = 1;
 	while (1)
 	{
 		if (!check_simulation_running(philo->sim))
 			break ;
-		if (num == 2)
-			take_forks(philo);
-		else if (num == 1)
-			for_odd(philo);
+		take_forks(philo);
 		if (!check_simulation_running(philo->sim))
 		{
 			release_forks(philo);

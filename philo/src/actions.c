@@ -6,7 +6,7 @@
 /*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:17:43 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/04 20:24:34 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/01/05 17:11:59 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ void	sleep_and_log(t_philosopher *philo)
 		print_action(philo->sim, philo->id, "is sleeping");
 	ft_usleep(philo->sim, philo->sim->time_to_sleep);
 }
-
 
 void	print_action(t_simulation *sim, int id, const char *status)
 {

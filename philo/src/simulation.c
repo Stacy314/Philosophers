@@ -6,7 +6,7 @@
 /*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:17:43 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/04 20:21:53 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/01/05 17:13:25 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,5 +87,3 @@ void	start_simulation(t_simulation *sim)
 	}
 	join_threads(sim);
 }
-
-

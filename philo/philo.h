@@ -6,7 +6,7 @@
 /*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:17:43 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/04 20:24:56 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/01/05 17:27:16 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <stdint.h>
 # include <unistd.h>
 # include <stdbool.h>
+# include <limits.h>
 
 # define RUNNING 1
 # define STOPPED 0
@@ -55,11 +56,9 @@ typedef struct s_simulation
 	bool			simulation_running;
 	pthread_mutex_t	log_mutex;
 	pthread_t		monitor_thread;
-	int				initialized;
 }	t_simulation;
 
 // simulation.c
-int		valid_arg(t_simulation *sim, char **argv);
 int		parse_arguments(t_simulation *sim, int argc, char **argv);
 int		init_simulation(t_simulation *sim);
 void	init_sructure(t_simulation *sim);
