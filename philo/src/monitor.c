@@ -6,7 +6,7 @@
 /*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:17:43 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/04 20:28:25 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/01/05 17:13:13 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ static int	check_meal_goal(t_simulation *sim)
 		pthread_mutex_unlock(&sim->log_mutex);
 		return (1);
 	}
-	// usleep(100);
 	return (0);
 }
 
@@ -61,7 +60,6 @@ int	check_philosopher_death(t_simulation *sim)
 			return (1);
 		}
 		i++;
-		// usleep(100);
 	}
 	return (0);
 }
