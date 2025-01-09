@@ -5,21 +5,27 @@ SRC_DIR = src
 OBJ_DIR = obj
 SRC_FILES = main.c  \
 			utils.c  \
-			utils2.c \
-			utils3.c \
+			time.c \
 			simulation.c \
-			philosopher.c \
+			initialization.c \
 			actions.c \
-			monitor.c
+			monitor.c \
+			validation.c \
+			fork.c \
+			conversion.c \
+			clean.c \
 OBJ_FILES = $(SRC_FILES:.c=.o)
 OBJS =  $(OBJ_DIR)/main.o \
 		$(OBJ_DIR)/simulation.o \
-		$(OBJ_DIR)/philosopher.o \
+		$(OBJ_DIR)/initialization.o \
 		$(OBJ_DIR)/utils.o \
-		$(OBJ_DIR)/utils2.o \
-		$(OBJ_DIR)/utils3.o \
+		$(OBJ_DIR)/time.o \
 		$(OBJ_DIR)/actions.o \
-		$(OBJ_DIR)/monitor.o
+		$(OBJ_DIR)/monitor.o \
+		$(OBJ_DIR)/validation.o \
+		$(OBJ_DIR)/fork.o \
+		$(OBJ_DIR)/conversion.o \
+		$(OBJ_DIR)/clean.o
 
 all: $(NAME)
 

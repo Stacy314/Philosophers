@@ -1,36 +1,44 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   clean.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:17:43 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/04 18:10:09 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/04 18:32:07 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
 
-int	main(int argc, char **argv)
+void	cleanup_simulation(t_simulation *sim)
 {
-	t_simulation	sim;
+	if (sim->philosophers)
+		free(sim->philosophers);
+	if (sim->forks)
+		free(sim->forks);
+}
 
-	if (argc < 5 || argc > 6)
+void	destroy_philo_mutex(t_simulation *sim, int i)
+{
+	while (--i >= 0)
 	{
-		printf("Error: wrong number of arguments\n");
-		return (1);
+		pthread_mutex_destroy(&sim->forks[i].fork_mutex);
+		pthread_mutex_destroy(&sim->philosophers[i].meal_mutex);
 	}
-	init_sructure(&sim);
-	if (!parse_arguments(&sim, argc, argv))
-		return (0);
-	if (!init_simulation(&sim))
+}
+
+void	destroy_mutexes(t_simulation *sim)
+{
+	int	i;
+
+	i = 0;
+	while (i < sim->num_philosophers)
 	{
-		printf("Error: Initialization failed\n");
-		return (1);
+		pthread_mutex_destroy(&sim->forks[i].fork_mutex);
+		pthread_mutex_destroy(&sim->philosophers[i].meal_mutex);
+		i++;
 	}
-	start_simulation(&sim);
-	destroy_mutexes(&sim);
-	cleanup_simulation(&sim);
-	return (0);
+	pthread_mutex_destroy(&sim->log_mutex);
 }

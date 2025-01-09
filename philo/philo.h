@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:17:43 by apechkov          #+#    #+#             */
-/*   Updated: 2024/12/30 17:59:29 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/04 18:51:31 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <stdint.h>
 # include <unistd.h>
 # include <stdbool.h>
+# include <limits.h>
 
 # define RUNNING 1
 # define STOPPED 0
@@ -59,13 +60,12 @@ typedef struct s_simulation
 }	t_simulation;
 
 // simulation.c
-int		valid_arg(t_simulation *sim, char **argv);
 int		parse_arguments(t_simulation *sim, int argc, char **argv);
 int		init_simulation(t_simulation *sim);
 void	init_sructure(t_simulation *sim);
 
 // philosopher.c
-void	start_simulation(t_simulation *sim);
+int		start_simulation(t_simulation *sim);
 void	*philosopher_lifecycle(void *arg);
 int		check_simulation_running(t_simulation *sim);
 
@@ -86,13 +86,16 @@ long	elapsed_time(long start_time);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
 int		ft_strlen(const char *s);
 char	*ft_itoa(int n);
-void	cleanup_simulation(t_simulation *sim);
 long	current_time(void);
 int		ft_atoi(const char *nptr);
 void	*ft_calloc(size_t nmemb, size_t size);
 void	ft_putendl_fd(char *s, int fd);
-void	destroy_mutexes(t_simulation *sim);
 void	ft_usleep(t_simulation *sim, long action);
 void	log_action(t_simulation *sim, int id, const char *status);
+
+// cleaen.c
+void	destroy_philo_mutex(t_simulation *sim, int i);
+void	destroy_mutexes(t_simulation *sim);
+void	cleanup_simulation(t_simulation *sim);
 
 #endif

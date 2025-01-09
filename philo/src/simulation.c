@@ -6,127 +6,148 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:17:43 by apechkov          #+#    #+#             */
-/*   Updated: 2024/12/30 19:22:30 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/04 18:51:12 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
 
-int	valid_arg(t_simulation *sim, char **argv)
+static void	one_philosopher(t_philosopher *philo)
 {
-	sim->str = ft_itoa(sim->num_philosophers);
-	//sim->str = NULL;
-	//if (!sim->str)
-	//	return (0);
-	if (ft_strncmp(sim->str, argv[1], ft_strlen(argv[1])))
-		return (free(sim->str), 0);
-	free(sim->str);
-	sim->str = ft_itoa(sim->time_to_die);
-	if (ft_strncmp(sim->str, argv[2], ft_strlen(argv[2])))
-		return (free(sim->str), 0);
-	free(sim->str);
-	sim->str = ft_itoa(sim->time_to_eat);
-	if (ft_strncmp(sim->str, argv[3], ft_strlen(argv[3])))
-		return (free(sim->str), 0);
-	free(sim->str);
-	sim->str = ft_itoa(sim->time_to_sleep);
-	if (ft_strncmp(sim->str, argv[4], ft_strlen(argv[4])))
-		return (free(sim->str), 0);
-	free(sim->str);
-	if (sim->meal_goal != -1)
-	{
-		sim->str = ft_itoa(sim->meal_goal);
-		if (ft_strncmp(sim->str, argv[5], ft_strlen(argv[5])))
-			return (free(sim->str), 0);
-		free(sim->str);
-	}
-	return (1);
+	pthread_mutex_lock(&philo->left_fork->fork_mutex);
+	log_action(philo->sim, philo->id, "has taken a fork");
+	usleep(philo->sim->time_to_die);
+	pthread_mutex_unlock(&philo->left_fork->fork_mutex);
 }
 
-int	parse_arguments(t_simulation *sim, int argc, char **argv)
+//void	*philosopher_lifecycle(void *arg)
+//{
+//	t_philosopher	*philo;
+
+//	philo = (t_philosopher *)arg;
+//	if (philo->sim->num_philosophers == 1)
+//		return (one_philosopher(philo), NULL);
+//	while (1)
+//	{
+//		if (!check_simulation_running(philo->sim))
+//			break ;
+//		take_forks(philo);
+//		if (!check_simulation_running(philo->sim))
+//		{
+//			release_forks(philo);
+//			break ;
+//		}
+//		eat(philo);
+//		release_forks(philo);
+//		if (!check_simulation_running(philo->sim))
+//			break ;
+//		sleep_and_log(philo);
+//		if (!check_simulation_running(philo->sim))
+//			break ;
+//		think(philo);
+//	}
+//	return (NULL);
+//}
+void	*philosopher_lifecycle(void *arg)
 {
-	sim->num_philosophers = ft_atoi(argv[1]);
-	sim->time_to_die = ft_atoi(argv[2]);
-	sim->time_to_eat = ft_atoi(argv[3]);
-	sim->time_to_sleep = ft_atoi(argv[4]);
-	if (argc == 6)
-	{
-		sim->meal_goal = ft_atoi(argv[5]);
-		if (sim->meal_goal <= 0)
-			return (printf("Error: wrong number of meal\n"), 0);
-	}
+	t_philosopher	*philo;
+	int				num;
+
+	philo = (t_philosopher *)arg;
+	if (philo->sim->num_philosophers == 1)
+		return (one_philosopher(philo), NULL);
+	if (philo->sim->num_philosophers % 2 == 0)
+		num = 2;
 	else
-		sim->meal_goal = -1;
-	if (!valid_arg(sim, argv))
-		return (printf("Error: Invalid arguments\n"), 0);
-	if (sim->num_philosophers < 1 || sim->num_philosophers > 200)
-		return (printf("Error: There should be 1-200 philosophers.\n"), 0);
-	if (sim->time_to_die <= 0 || sim->time_to_eat <= 0
-		|| sim->time_to_sleep <= 0)
-		return (printf("Error: ttd, tte, tts must be greater than 0.\n"), 0);
-	if (sim->time_to_die < 60 || sim->time_to_eat < 60
-		|| sim->time_to_sleep < 60)
-		return (printf("Error: ttd, tte, tts must be at least 60 ms.\n"), 0);
-	return (1);
+		num = 1;
+	while (1)
+	{
+		if (!check_simulation_running(philo->sim))
+			break ;
+		if (num == 2)
+			take_forks(philo);
+		else if (num == 1)
+			for_odd(philo);
+		if (!check_simulation_running(philo->sim))
+		{
+			release_forks(philo);
+			break ;
+		}
+		eat(philo);
+		release_forks(philo);
+		if (!check_simulation_running(philo->sim))
+			break ;
+		sleep_and_log(philo);
+		if (!check_simulation_running(philo->sim))
+			break ;
+		think(philo);
+	}
+	return (NULL);
 }
 
-void	init_philosopher(t_simulation *sim)
+static void	join_threads(t_simulation *sim)
 {
 	int	i;
+	int	thread;
 
 	i = 0;
 	while (i < sim->num_philosophers)
 	{
-		sim->philosophers[i].id = i + 1;
-		sim->philosophers[i].left_fork = &sim->forks[i];
-		sim->philosophers[i].right_fork = &sim->forks[(i + 1)
-			% sim->num_philosophers];
-		sim->philosophers[i].meals_eaten = 0;
-		sim->philosophers[i].last_meal_time = current_time();
-		sim->philosophers[i].sim = sim;
+		thread = pthread_join(sim->philosophers[i].thread, NULL);
+		if (thread != 0)
+		{
+			ft_putendl_fd("Error: pthread_join failed ", 2);
+		}
 		i++;
+	}
+	thread = pthread_join(sim->monitor_thread, NULL);
+	if (thread != 0)
+	{
+		ft_putendl_fd("Error: pthread_join failed ", 2);
 	}
 }
 
-int	init_mutexes(t_simulation *sim)
+static void	stop_simulation(t_simulation *sim, int i)
 {
-	int	i;
+	int	j;
+	int	thread;
 
+	pthread_mutex_lock(&sim->log_mutex);
+	sim->simulation_running = STOPPED;
+	pthread_mutex_unlock(&sim->log_mutex);
+	ft_putendl_fd("Error: pthread_create failed", 2);
+	j = 0;
+	while (j < i)
+	{
+		thread = pthread_join(sim->philosophers[j].thread, NULL);
+		j++;
+	}
+}
+
+int	start_simulation(t_simulation *sim)
+{
+	int			i;
+	int			thread;
+
+	pthread_mutex_lock(&sim->log_mutex);
+	sim->simulation_running = RUNNING;
+	pthread_mutex_unlock(&sim->log_mutex);
+	sim->start_time = current_time();
 	i = 0;
 	while (i < sim->num_philosophers)
 	{
-		init_philosopher(sim);
-		if (pthread_mutex_init(&sim->forks[i].fork_mutex, NULL) != 0)
-			return (0);
-		if (pthread_mutex_init(&sim->philosophers[i].meal_mutex, NULL) != 0)
-			return (0);
+		thread = pthread_create(&sim->philosophers[i].thread, NULL,
+				philosopher_lifecycle, &sim->philosophers[i]);
+		if (thread != 0)
+			return (stop_simulation(sim, i + 1), 0);
 		i++;
 	}
-	if (pthread_mutex_init(&sim->log_mutex, NULL) != 0)
-		return (0);
-	return (1);
-}
-
-int	init_simulation(t_simulation *sim)
-{
-	sim->philosophers = ft_calloc(sim->num_philosophers
-			* sizeof(t_philosopher), 1);
-	if (!sim->philosophers)
+	thread = pthread_create(&sim->monitor_thread, NULL, death_monitor, sim);
+	if (thread != 0)
 	{
-		if (sim->philosophers)
-			free(sim->philosophers);
+		stop_simulation(sim, sim->num_philosophers);
 		return (0);
 	}
-	sim->forks = ft_calloc(sim->num_philosophers * sizeof(t_fork), 1);
-	if (!sim->forks)
-	{
-		cleanup_simulation(sim);
-		return (0);
-	}
-	if (!init_mutexes(sim))
-	{
-		cleanup_simulation(sim);
-		return (0);
-	}
+	join_threads(sim);
 	return (1);
 }
