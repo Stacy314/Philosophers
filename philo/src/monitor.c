@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:17:43 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/04 18:42:46 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/06 16:44:57 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ static int	check_meal_goal(t_simulation *sim)
 		pthread_mutex_unlock(&sim->log_mutex);
 		return (1);
 	}
-	//usleep(100);
 	return (0);
 }
 
@@ -51,7 +50,7 @@ int	check_philosopher_death(t_simulation *sim)
 		time_since_last_meal = current_time()
 			- sim->philosophers[i].last_meal_time;
 		pthread_mutex_unlock(&sim->philosophers[i].meal_mutex);
-		if (time_since_last_meal > sim->time_to_die)
+		if (time_since_last_meal >= sim->time_to_die)
 		{
 			pthread_mutex_lock(&sim->log_mutex);
 			sim->simulation_running = 0;
@@ -62,7 +61,6 @@ int	check_philosopher_death(t_simulation *sim)
 		}
 		i++;
 	}
-	//usleep(100);
 	return (0);
 }
 
@@ -93,4 +91,3 @@ void	*death_monitor(void *arg)
 	}
 	return (NULL);
 }
-
