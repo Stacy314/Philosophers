@@ -6,6 +6,10 @@ The **Philosophers** project is a classic concurrency problem implemented in C u
 
 This project is part of the 42 School curriculum and focuses on the use of **pthread** and **synchronization mechanisms** to avoid common concurrency pitfalls such as **deadlocks** and **race conditions**.
 
+## 🧠 About
+This project simulates a philosophical dilemma where thinking too long without a fork can be fatal.
+
+“I never thought philosophy would be so deadly.”
 ---
 
 ## 📦 Project Structure
@@ -140,8 +144,9 @@ This message must appear within 10ms of the actual time of death.
 
 - Deadlock prevention
 
-## 🧠 About
-This project simulates a philosophical dilemma where thinking too long without a fork can be fatal.
+## 📋 Testing
+Run test.sh in philo/
 
-“I never thought philosophy would be so deadly.”
-
+```bash
+./test.sh
+```
