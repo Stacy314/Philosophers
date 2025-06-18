@@ -6,7 +6,6 @@ PROGRAM="./philo"
 # Test cases and expected outcomes
 declare -A TEST_CASES
 TEST_CASES=(
-#  ["3 650 200 100 5"]="all_ate"
   ["3 1000 200 700 5"]="no_death"
   ["3 650 200 10000 2"]="early_exit"
   ["3 650 20000 100 2"]="during_eating"
